@@ -1,6 +1,6 @@
 ---
 - name: Configure Ubuntu web server and deploy static site
-  hosts: web
+  hosts: 
   become: true
 
   tasks:

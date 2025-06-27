@@ -8,20 +8,13 @@ pipeline {
   stages {
     stage('Terraform Init & Apply') {
       environment {
-        ARM_CLIENT_ID       = credentials('azure-client-id')
-        ARM_CLIENT_SECRET   = credentials('azure-client-secret')
-        ARM_TENANT_ID       = credentials('azure-tenant-id')
-        ARM_SUBSCRIPTION_ID = credentials('azure-subscription-id')
+        
       }
       steps {
-        dir('terraform') {
+        dir('/tmp/project/terraform') {
           sh '''
             terraform init
-            terraform apply -auto-approve \
-              -var="client_id=$ARM_CLIENT_ID" \
-              -var="client_secret=$ARM_CLIENT_SECRET" \
-              -var="tenant_id=$ARM_TENANT_ID" \
-              -var="subscription_id=$ARM_SUBSCRIPTION_ID"
+            terraform apply -auto-approve 
           '''
         }
       }
@@ -49,7 +42,7 @@ pipeline {
             echo "$VM_PUBLIC_IP ansible_user=devops ansible_ssh_private_key_file=$SSH_KEY" >> inventory.ini
 
             # Run Ansible playbook
-            ansible-playbook ansible/install_web.yml -i inventory.ini
+            ansible-playbook tmp/project/ansible/install_web.yml -i inventory.ini
 
             # Clean up
             rm -f inventory.ini
